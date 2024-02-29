@@ -57,4 +57,13 @@ RSpec.describe RSpec::Sql do
       "TRANSACTION",
     ]
   end
+
+  it "expects a summary of queries" do
+    expect { User.create!.update(name: "Jane") }.to query_database(
+      {
+        insert: { users: 1 },
+        update: { users: 1 },
+      }
+    )
+  end
 end

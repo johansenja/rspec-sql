@@ -3,6 +3,8 @@
 require "active_support"
 require "rspec"
 
+require_relative "sql/query_summary"
+
 module RSpec
   module Sql; end
 
@@ -18,6 +20,8 @@ module RSpec
         @queries.size == expected.size
       elsif expected.is_a?(Array)
         query_names == expected
+      elsif expected.is_a?(Hash)
+        query_summary == expected
       else
         raise "What are you expecting?"
       end
@@ -50,6 +54,10 @@ module RSpec
 
     def query_descriptions
       @queries.map { |q| "#{q[:name]}  #{q[:sql]}" }
+    end
+
+    def query_summary
+      Sql::QuerySummary.new(@queries).summary
     end
 
     def scribe_queries(&)

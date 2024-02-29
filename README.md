@@ -22,7 +22,7 @@ expect { nil }.to_not query_database
 expect { User.last }.to query_database 1
 expect { User.create }.to query_database 3.times
 
-# Assert specific queries:
+# Assert a specific query list:
 expect { User.last }.to query_database ["User Load"]
 
 expect { User.create!.update(name: "Jane") }.to query_database [
@@ -33,6 +33,14 @@ expect { User.create!.update(name: "Jane") }.to query_database [
   "User Update",
   "TRANSACTION",
 ]
+
+# Assert a specific query summary:
+expect { User.create!.update(name: "Jane") }.to query_database(
+  {
+    insert: { users: 1 },
+    update: { users: 1 },
+  }
+)
 ```
 
 ## Alternatives
