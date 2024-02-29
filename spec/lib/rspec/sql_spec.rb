@@ -30,6 +30,7 @@ RSpec.describe RSpec::Sql do
 
   it "expects a number of database queries" do
     expect { User.last }.to query_database 1
+    expect { User.create! }.to query_database 3.times
 
     expect {
       expect { User.last }.to query_database 2

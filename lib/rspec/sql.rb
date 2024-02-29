@@ -14,6 +14,8 @@ module RSpec
         !@queries.empty?
       elsif expected.is_a?(Integer)
         @queries.size == expected
+      elsif expected.is_a?(Enumerator) && expected.inspect.match?(/:times>$/)
+        @queries.size == expected.size
       elsif expected.is_a?(Array)
         query_names == expected
       else

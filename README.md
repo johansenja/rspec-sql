@@ -18,8 +18,9 @@ expect { User.last }.to query_database
 # Assert no database queries:
 expect { nil }.to_not query_database
 
-# Assert exactly one query:
+# Assert exact number of queries:
 expect { User.last }.to query_database 1
+expect { User.create }.to query_database 3.times
 
 # Assert specific queries:
 expect { User.last }.to query_database ["User Load"]
