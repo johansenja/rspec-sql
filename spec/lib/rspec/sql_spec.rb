@@ -45,4 +45,15 @@ RSpec.describe RSpec::Sql do
   it "expects certain queries" do
     expect { User.last }.to query_database ["User Load"]
   end
+
+  it "expects multiple queries" do
+    expect { User.create!.update(name: "Jane") }.to query_database [
+      "TRANSACTION",
+      "User Create",
+      "TRANSACTION",
+      "TRANSACTION",
+      "User Update",
+      "TRANSACTION",
+    ]
+  end
 end
