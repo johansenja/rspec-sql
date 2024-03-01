@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "rspec-sql"
-  s.version     = "0.0.0"
+  s.version     = "0.0.1"
   s.summary     = "RSpec::Sql matcher"
   s.description = "RSpec matcher for database queries."
   s.authors     = ["Maikel Linke", "Open Food Network contributors"]
