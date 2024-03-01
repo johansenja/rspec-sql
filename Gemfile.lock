@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rspec-sql (0.0.0)
+    rspec-sql (0.0.1)
       activesupport
       rspec
 
