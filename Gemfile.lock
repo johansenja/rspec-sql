@@ -24,6 +24,7 @@ GEM
       minitest (>= 5.1)
       mutex_m
       tzinfo (~> 2.0)
+    ast (2.4.2)
     base64 (0.2.0)
     bigdecimal (3.1.6)
     concurrent-ruby (1.2.3)
@@ -33,8 +34,18 @@ GEM
       ruby2_keywords
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
+    json (2.7.2)
+    language_server-protocol (3.17.0.3)
     minitest (5.22.2)
     mutex_m (0.2.0)
+    parallel (1.24.0)
+    parser (3.3.0.5)
+      ast (~> 2.4.1)
+      racc
+    racc (1.7.3)
+    rainbow (3.1.1)
+    regexp_parser (2.9.0)
+    rexml (3.2.6)
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
@@ -48,11 +59,26 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.0)
+    rubocop (1.63.1)
+      json (~> 2.3)
+      language_server-protocol (>= 3.17.0)
+      parallel (~> 1.10)
+      parser (>= 3.3.0.2)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml (>= 3.2.5, < 4.0)
+      rubocop-ast (>= 1.31.1, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 2.4.0, < 3.0)
+    rubocop-ast (1.31.2)
+      parser (>= 3.3.0.4)
+    ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     sqlite3 (1.7.2-x86_64-linux)
     timeout (0.4.1)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    unicode-display_width (2.5.0)
 
 PLATFORMS
   x86_64-linux
@@ -60,6 +86,7 @@ PLATFORMS
 DEPENDENCIES
   activerecord
   rspec-sql!
+  rubocop
   sqlite3
 
 BUNDLED WITH
