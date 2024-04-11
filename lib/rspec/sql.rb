@@ -5,10 +5,13 @@ require "rspec"
 
 require_relative "sql/query_summary"
 
+# We are building within the RSpec namespace for consistency and convenience.
+# We are not part of the RSpec team though.
 module RSpec
+  # RSpec::Sql contains our code.
   module Sql; end
 
-  RSpec::Matchers.define :query_database do |expected = nil|
+  Matchers.define :query_database do |expected = nil|
     match do |block|
       @queries = scribe_queries(&block)
 
@@ -45,7 +48,11 @@ module RSpec
     end
 
     failure_message_when_negated do |_block|
-      "Expected no database queries but observed:\n\n#{query_descriptions.join("\n")}"
+      <<~TXT
+        Expected no database queries but observed:
+
+        #{query_descriptions.join("\n")}
+      TXT
     end
 
     def supports_block_expectations?
@@ -67,9 +74,9 @@ module RSpec
     def scribe_queries(&)
       queries = []
 
-      logger = ->(_name, _started, _finished, _unique_id, payload) {
+      logger = lambda do |_name, _started, _finished, _unique_id, payload|
         queries << payload unless %w[CACHE SCHEMA].include?(payload[:name])
-      }
+      end
 
       ActiveSupport::Notifications.subscribed(logger, "sql.active_record", &)
 
