@@ -66,4 +66,89 @@ RSpec.describe RSpec::Sql do
       }
     )
   end
+
+  it "prints user-friendly message expecting a number" do
+    message = error_message { expect { User.last }.to query_database 2 }
+    expect(message).to eq <<~TXT
+      Expected database queries: 2
+      Actual database queries:   ["User Load"]
+
+      Diff: 
+      @@ -1 +1 @@
+      -2
+      +["User Load"]
+
+
+      Full query log:
+
+      User Load  SELECT "users".* FROM "users" ORDER BY "users"."id" DESC LIMIT ?
+    TXT
+  end
+
+  it "prints user-friendly message expecting x.times" do
+    message = error_message { expect { User.last }.to query_database 2.times }
+    expect(message).to eq <<~TXT
+      Expected database queries: 2
+      Actual database queries:   ["User Load"]
+
+      Diff: 
+      @@ -1 +1 @@
+      -2
+      +["User Load"]
+
+
+      Full query log:
+
+      User Load  SELECT "users".* FROM "users" ORDER BY "users"."id" DESC LIMIT ?
+    TXT
+  end
+
+  it "prints user-friendly message expecting list" do
+    message = error_message { expect { User.last }.to query_database ["User Update"] }
+    expect(message).to eq <<~TXT
+      Expected database queries: ["User Update"]
+      Actual database queries:   ["User Load"]
+
+      Diff: 
+      @@ -1 +1 @@
+      -["User Update"]
+      +["User Load"]
+
+
+      Full query log:
+
+      User Load  SELECT "users".* FROM "users" ORDER BY "users"."id" DESC LIMIT ?
+    TXT
+  end
+
+  it "prints user-friendly message expecting summary" do
+    message = error_message {
+      expect { User.last }.to query_database(
+        update: { user: 1 }
+      )
+    }
+
+    # This message could be better but nobody has asked for it yet.
+    expect(message).to eq <<~TXT
+      Expected database queries: {:update=>{:user=>1}}
+      Actual database queries:   ["User Load"]
+
+      Diff: 
+      @@ -1 +1 @@
+      -:update => {:user=>1},
+      +["User Load"]
+
+
+      Full query log:
+
+      User Load  SELECT "users".* FROM "users" ORDER BY "users"."id" DESC LIMIT ?
+    TXT
+  end
+
+  def error_message
+    yield
+  rescue RSpec::Expectations::ExpectationNotMetError => e
+    # Remove colours from message:
+    e.message.gsub(/\e\[(\d+)m/, "")
+  end
 end

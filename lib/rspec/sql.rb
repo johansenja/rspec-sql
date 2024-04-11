@@ -28,6 +28,10 @@ module RSpec
     end
 
     failure_message do |_block|
+      if expected.is_a?(Enumerator) && expected.inspect.match?(/:times>$/)
+        expected = expected.size
+      end
+
       <<~MESSAGE
         Expected database queries: #{expected}
         Actual database queries:   #{query_names}
