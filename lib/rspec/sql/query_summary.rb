@@ -2,8 +2,9 @@
 
 module RSpec
   module Sql
+    # Converts a list of queries into a summary hash.
     class QuerySummary
-      QUERY_TYPES = [:delete, :insert, :select, :update].freeze
+      QUERY_TYPES = %i[delete insert select update].freeze
 
       attr_reader :summary
 

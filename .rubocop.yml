@@ -1,0 +1,31 @@
+AllCops:
+  NewCops: enable
+
+Layout/LineLength:
+  Max: 80 # default is 120
+
+Metrics/BlockLength:
+  AllowedMethods:
+    # RSpec context block containing many smaller blocks:
+    - Matchers.define
+    # RSpec context block containing many smaller examples:
+    - RSpec.describe
+
+Style/BlockDelimiters:
+  BracesRequiredMethods:
+    # The RSpec expect syntax is prettier with braced blocks.
+    - expect
+
+Style/StringLiterals:
+  # It's my preference to add or remove variable from strings without replacing
+  # the outer quotes.
+  EnforcedStyle: double_quotes
+
+Style/TrailingCommaInArrayLiteral:
+  # Consistent commas allow for adding and removing lines without affecting
+  # other lines of arrays. Less editing, prettier diffs.
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/TrailingCommaInHashLiteral:
+  # Same reason as above.
+  EnforcedStyleForMultiline: consistent_comma
