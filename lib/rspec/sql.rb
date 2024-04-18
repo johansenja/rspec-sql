@@ -3,7 +3,7 @@
 require "active_support"
 require "rspec"
 
-require_relative "sql/query_summary"
+require_relative "sql/query_matcher"
 
 # We are building within the RSpec namespace for consistency and convenience.
 # We are not part of the RSpec team though.
@@ -15,19 +15,7 @@ module RSpec
     match do |block|
       @queries = scribe_queries(&block)
 
-      if expected.nil?
-        !@queries.empty?
-      elsif expected.is_a?(Integer)
-        @queries.size == expected
-      elsif expected.is_a?(Enumerator) && expected.inspect.match?(/:times>$/)
-        @queries.size == expected.size
-      elsif expected.is_a?(Array)
-        query_names == expected
-      elsif expected.is_a?(Hash)
-        query_summary == expected
-      else
-        raise "What are you expecting?"
-      end
+      matcher.matches?(expected)
     end
 
     failure_message do |_block|
@@ -67,8 +55,8 @@ module RSpec
       @queries.map { |q| "#{q[:name]}  #{q[:sql]}" }
     end
 
-    def query_summary
-      Sql::QuerySummary.new(@queries).summary
+    def matcher
+      @matcher = Sql::QueryMatcher.new(@queries)
     end
 
     def scribe_queries(&)
