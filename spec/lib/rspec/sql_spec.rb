@@ -84,16 +84,12 @@ RSpec.describe RSpec::Sql do
   end
 
   it "prints user-friendly message expecting a number" do
-    message = error_message { expect { User.last }.to query_database 2 }
+    message = error_message { expect { User.last }.to query_database 0 }
     expect(message).to eq <<~TXT
-      Expected database queries: 2
+      Expected database queries: 0
       Actual database queries:   1
 
-      Diff:
-      @@ -1 +1 @@
-      -2
-      +1
-
+      Diff: +1
 
       Full query log:
 
@@ -107,11 +103,7 @@ RSpec.describe RSpec::Sql do
       Expected database queries: 2
       Actual database queries:   1
 
-      Diff:
-      @@ -1 +1 @@
-      -2
-      +1
-
+      Diff: -1
 
       Full query log:
 

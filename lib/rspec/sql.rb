@@ -29,7 +29,7 @@ module RSpec
         Expected database queries: #{expected}
         Actual database queries:   #{matcher.actual}
 
-        Diff: #{Expectations.differ.diff_as_object(matcher.actual, expected)}
+        Diff: #{diff(matcher.actual, expected)}
 
         Full query log:
 
@@ -55,6 +55,15 @@ module RSpec
 
     def matcher
       @matcher
+    end
+
+    def diff(actual, expected)
+      if expected.is_a?(Numeric)
+        change = actual - expected
+        format("%+d", change)
+      else
+        Expectations.differ.diff_as_object(actual, expected)
+      end
     end
 
     def scribe_queries(&)
