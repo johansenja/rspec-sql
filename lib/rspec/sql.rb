@@ -14,8 +14,9 @@ module RSpec
   Matchers.define :query_database do |expected = nil|
     match do |block|
       @queries = scribe_queries(&block)
+      @matcher = Sql::QueryMatcher.new(@queries, expected)
 
-      matcher.matches?(expected)
+      matcher.matches?
     end
 
     failure_message do |_block|
@@ -56,7 +57,7 @@ module RSpec
     end
 
     def matcher
-      @matcher = Sql::QueryMatcher.new(@queries)
+      @matcher
     end
 
     def scribe_queries(&)
