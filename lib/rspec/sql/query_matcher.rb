@@ -6,6 +6,8 @@ module RSpec
   module Sql
     # Compares expectations with actual queries.
     class QueryMatcher
+      attr_reader :expected
+
       def initialize(queries, expected)
         @queries = queries
         @expected = sanitize_number(expected)
@@ -18,9 +20,11 @@ module RSpec
         actual == expected
       end
 
-      private
+      def actual
+        @actual ||= actual_compared_to_expected
+      end
 
-      attr_reader :expected
+      private
 
       # Support writing: `is_expected.to query_database 5.times`
       def sanitize_number(expected)
@@ -29,10 +33,6 @@ module RSpec
         else
           expected
         end
-      end
-
-      def actual
-        @actual ||= actual_compared_to_expected
       end
 
       def actual_compared_to_expected

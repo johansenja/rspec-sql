@@ -15,20 +15,21 @@ module RSpec
     match do |block|
       @queries = scribe_queries(&block)
       @matcher = Sql::QueryMatcher.new(@queries, expected)
+      expected = matcher.expected
 
       matcher.matches?
     end
 
     failure_message do |_block|
-      if expected.is_a?(Enumerator) && expected.inspect.match?(/:times>$/)
-        expected = expected.size
+      if expected.nil?
+        return "Expected at least one database query but observed none."
       end
 
       <<~MESSAGE
         Expected database queries: #{expected}
-        Actual database queries:   #{query_names}
+        Actual database queries:   #{matcher.actual}
 
-        Diff: #{Expectations.differ.diff_as_object(query_names, expected)}
+        Diff: #{Expectations.differ.diff_as_object(matcher.actual, expected)}
 
         Full query log:
 
@@ -46,10 +47,6 @@ module RSpec
 
     def supports_block_expectations?
       true
-    end
-
-    def query_names
-      @queries.map { |q| q[:name] || q[:sql].split.take(2).join(" ") }
     end
 
     def query_descriptions
