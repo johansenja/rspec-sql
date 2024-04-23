@@ -67,17 +67,29 @@ RSpec.describe RSpec::Sql do
     )
   end
 
-  it "prints user-friendly message expecting a number" do
-    message = error_message { expect { User.last }.to query_database 2 }
+  it "prints user-friendly message expecting nothing" do
+    message = error_message { expect { User.last }.not_to query_database }
     expect(message).to eq <<~TXT
-      Expected database queries: 2
-      Actual database queries:   ["User Load"]
+      Expected no database queries but observed:
 
-      Diff:
-      @@ -1 +1 @@
-      -2
-      +["User Load"]
+      User Load  SELECT "users".* FROM "users" ORDER BY "users"."id" DESC LIMIT ?
+    TXT
+  end
 
+  it "prints user-friendly message expecting something" do
+    message = error_message { expect { nil }.to query_database }
+    expect(message).to eq(
+      "Expected at least one database query but observed none."
+    )
+  end
+
+  it "prints user-friendly message expecting a number" do
+    message = error_message { expect { User.last }.to query_database 0 }
+    expect(message).to eq <<~TXT
+      Expected database queries: 0
+      Actual database queries:   1
+
+      Diff: +1
 
       Full query log:
 
@@ -89,13 +101,9 @@ RSpec.describe RSpec::Sql do
     message = error_message { expect { User.last }.to query_database 2.times }
     expect(message).to eq <<~TXT
       Expected database queries: 2
-      Actual database queries:   ["User Load"]
+      Actual database queries:   1
 
-      Diff:
-      @@ -1 +1 @@
-      -2
-      +["User Load"]
-
+      Diff: -1
 
       Full query log:
 
@@ -134,12 +142,12 @@ RSpec.describe RSpec::Sql do
     # This message could be better but nobody has asked for it yet.
     expect(message).to eq <<~TXT
       Expected database queries: {:update=>{:user=>1}}
-      Actual database queries:   ["User Load"]
+      Actual database queries:   {:select=>{:users=>1}}
 
       Diff:
       @@ -1 +1 @@
       -:update => {:user=>1},
-      +["User Load"]
+      +:select => {:users=>1},
 
 
       Full query log:
