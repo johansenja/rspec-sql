@@ -16,7 +16,7 @@ gem "rspec-sql"
 expect { User.last }.to query_database
 
 # Assert no database queries:
-expect { nil }.to_not query_database
+expect { nil }.not_to query_database
 
 # Assert exact number of queries:
 expect { User.last }.to query_database 1
